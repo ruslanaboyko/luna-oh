@@ -2,3 +2,5 @@
 *.log
 target/
 .idea/
+token.txt
+servers.json
