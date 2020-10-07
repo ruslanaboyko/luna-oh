@@ -2,7 +2,6 @@ import org.javacord.api.DiscordApi
 import org.javacord.api.entity.user.User
 import org.javacord.api.event.message.MessageCreateEvent
 
-import scala.annotation.switch
 import scala.collection.immutable.Queue
 
 object OfficeHoursBot {
@@ -17,6 +16,8 @@ object OfficeHoursBot {
           message.getMessageContent.startsWith(Luna.prefix + "L")) leave(message)
         else if (message.getMessageContent.startsWith(Luna.prefix + "show") ||
           message.getMessageContent.startsWith(Luna.prefix + "S")) show(message)
+        else if (message.getMessageContent.startsWith(Luna.prefix + "pet") &&
+          message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) message.getChannel.sendMessage("purr")
         else if ((message.getMessageContent.startsWith(Luna.prefix + "dequeue") ||
           message.getMessageContent.startsWith(Luna.prefix + "D")) &&
           message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) dequeue(message)
@@ -48,10 +49,16 @@ object OfficeHoursBot {
   }
 
   def show(message: MessageCreateEvent): Unit = {
-    val extractedNames: Seq[String] = for (member <- OHQueue) yield member.getDisplayName(message.getServer.get)
-    message.getChannel.sendMessage(s"The queue has the following students, in order:\n" +
-      s"${extractedNames.mkString("\n")}")
+    if (OHQueue.nonEmpty) {
+      val extractedNames: Seq[String] = for (member <- OHQueue) yield member.getDisplayName(message.getServer.get)
+      message.getChannel.sendMessage(s"The queue has the following students, in order:\n" +
+        s"${extractedNames.mkString("\n")}")
+    }
+    else {
+      message.getChannel.sendMessage("The queue is currently empty.")
+    }
   }
+
 
   def enqueue(message: MessageCreateEvent): Unit = {
     val author: User = message.getMessageAuthor.asUser.get
