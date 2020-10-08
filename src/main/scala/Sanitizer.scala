@@ -9,7 +9,7 @@ object Sanitizer {
    */
   def cleanName(name: String): String = {
     val cleanName: StringBuilder = new StringBuilder
-    val needToEscape: Array[Char] = Array('*', '`', '~', '_', '>', '|', ':', '.', '\\', '/', '.', '\'') // Characters that need to have an escape character placed in front of them
+    val needToEscape: Array[Char] = Array('*', '`', '~', '_', '>', '|', ':', '.', '\\', '/', '.', '\'', '@', '#') // Characters that need to have an escape character placed in front of them
     for (c <- name) {
       if (needToEscape.contains(c)) {
         // This char needs to be escaped
@@ -21,4 +21,15 @@ object Sanitizer {
     }
     cleanName.toString()
   }
+
+  /**
+   * Removes @ mentions from a message
+   *
+   * @param message the input message to clean
+   */
+  def removeMentions(message: String): String = {
+    message.replace("@", "")
+  }
+
+
 }
