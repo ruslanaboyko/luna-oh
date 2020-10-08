@@ -20,7 +20,7 @@ object Luna {
     //    }
 
     OfficeHoursBot.start(api)
-//    owoifier.start(api)
+    owoifier.start(api)
 
   }
 
