@@ -51,14 +51,19 @@ object OfficeHoursBot {
   def show(message: MessageCreateEvent): Unit = {
     if (OHQueue.nonEmpty) {
       val extractedNames: Seq[String] = for (member <- OHQueue) yield member.getDisplayName(message.getServer.get)
-      message.getChannel.sendMessage(s"The queue has the following students, in order:\n" +
-        s"${extractedNames.mkString("\n")}")
+      //      message.getChannel.sendMessage(s"The queue has the following students, in order:\n" +
+      //        s"${extractedNames.mkString("\n")}")
+      // With numbering and sanitized names:
+      val queueOrderMessage: StringBuilder = new StringBuilder("The queue has the following students, in order:\n")
+      for (((name), i) <- extractedNames.zipWithIndex) {
+        queueOrderMessage.append(s"${i + 1}. ${Sanitizer.cleanName(name)}")
+      }
+      message.getChannel.sendMessage(queueOrderMessage.toString())
     }
     else {
       message.getChannel.sendMessage("The queue is currently empty.")
     }
   }
-
 
   def enqueue(message: MessageCreateEvent): Unit = {
     val author: User = message.getMessageAuthor.asUser.get
