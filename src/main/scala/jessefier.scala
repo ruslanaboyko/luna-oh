@@ -22,13 +22,14 @@ object jessefier {
     api.addMessageCreateListener((message: MessageCreateEvent) => {
       if (message.getMessageContent.startsWith(Luna.prefix + "jessefy")) {
         if (message.getMessageAuthor.asUser.get != api.getYourself) {
-          message.getChannel.sendMessage(Sanitizer.removeMentions(message.getMessageContent.replace("Hughes", "Jesse")))
+          message.getChannel.sendMessage(Sanitizer.removeMentions(message.getMessageContent.replace("Hughes", "Jesse")).replace("!jessefy", ""))
         }
       }
 
       else if (message.getMessageContent.startsWith(Luna.prefix + "superjessefy")) {
         if (message.getMessageAuthor.asUser.get != api.getYourself) {
-          message.getChannel.sendMessage(Sanitizer.removeMentions(replaceRandomWordsWithAnotherWord(23, message.getMessageContent, "Jesse")))
+          var m: String = message.getMessageContent
+          message.getChannel.sendMessage(Sanitizer.removeMentions(replaceRandomWordsWithAnotherWord(23, message.getMessageContent, "Jesse")).replace("!superjessefy", ""))
         }
       }
 

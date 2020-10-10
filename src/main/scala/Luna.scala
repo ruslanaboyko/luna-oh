@@ -22,7 +22,7 @@ object Luna {
     OfficeHoursBot.start(api)
 //    owoifier.start(api)
     jessefier.start(api)
-
+    kittycat.start(api)
   }
 
   def readToken(tokenFile: File): String = {

@@ -31,5 +31,21 @@ object Sanitizer {
     message.replace("@", "")
   }
 
+  /**
+   * Removes the first part of the user's message and returns the rest
+   *
+   * @param message Something like "!command how are you today?"
+   * @return Something like "how are you today?"
+   */
+  def removeCommand(message: String): String = {
+    val parts: Array[String] = message.split(" ", 2)
+    require(parts.length > 0, "The message was empty")
+    if (parts.length == 2) {
+      parts(1)
+    } else {
+      "" // Return an empty string if the whole message is the command
+    }
+
+  }
 
 }
