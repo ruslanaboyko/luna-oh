@@ -9,23 +9,21 @@ object OfficeHoursBot {
 
   def start(api: DiscordApi): Unit = {
     api.addMessageCreateListener((message: MessageCreateEvent) => {
-      if (message.getMessageAuthor.asUser.get != api.getYourself && message.getChannel.asServerTextChannel.get.getName == "office-hours-queue") {
-        if (message.getMessageContent.startsWith(Luna.prefix + "enqueue") ||
-          message.getMessageContent.startsWith(Luna.prefix + "E")) enqueue(message)
-        else if (message.getMessageContent.startsWith(Luna.prefix + "leave") ||
-          message.getMessageContent.startsWith(Luna.prefix + "L")) leave(message)
-        else if (message.getMessageContent.startsWith(Luna.prefix + "show") ||
-          message.getMessageContent.startsWith(Luna.prefix + "S")) show(message)
-        else if (message.getMessageContent.startsWith(Luna.prefix + "pet") &&
-          message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) message.getChannel.sendMessage("purr")
-        else if ((message.getMessageContent.startsWith(Luna.prefix + "dequeue") ||
-          message.getMessageContent.startsWith(Luna.prefix + "D")) &&
+      if (message.getMessageAuthor.asUser.get != api.getYourself && message.getChannel.asServerTextChannel.get.getName == Luna.OH_QUEUE_CHANNEL) {
+        if (message.getMessageContent.startsWith(Luna.PREFIX + "enqueue") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "E")) enqueue(message)
+        else if (message.getMessageContent.startsWith(Luna.PREFIX + "leave") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "L")) leave(message)
+        else if (message.getMessageContent.startsWith(Luna.PREFIX + "show") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "S")) show(message)
+        else if ((message.getMessageContent.startsWith(Luna.PREFIX + "dequeue") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "D")) &&
           message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) dequeue(message)
-        else if ((message.getMessageContent.startsWith(Luna.prefix + "clear") ||
-          message.getMessageContent.startsWith(Luna.prefix + "C")) &&
+        else if ((message.getMessageContent.startsWith(Luna.PREFIX + "clear") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "C")) &&
           message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) clear(message)
-        else if (message.getMessageContent.startsWith(Luna.prefix + "help") ||
-          message.getMessageContent.startsWith(Luna.prefix + "H")) message.getChannel.sendMessage(
+        else if (message.getMessageContent.startsWith(Luna.PREFIX + "help") ||
+          message.getMessageContent.startsWith(Luna.PREFIX + "H")) message.getChannel.sendMessage(
           "To enqueue yourself, send a \"!enqueue\" or \"!E\" message.\n" +
             "To see the current Queue, send a \"!show\" or \"!S\" message.\n" +
             "TA's will dequeue you with a \"!dequeue\" or \"!D\" message.\n" +
@@ -68,20 +66,25 @@ object OfficeHoursBot {
   def enqueue(message: MessageCreateEvent): Unit = {
     val author: User = message.getMessageAuthor.asUser.get
     val authorDiscriminatedName: String = message.getMessageAuthor.asUser.get.getMentionTag
-    if (!OHQueue.contains(author)) {
-      OHQueue = OHQueue.enqueue(author)
-      // OHWaitTime :+= (author, (System.nanoTime(), null))
-      if (OHQueue.length == 1) {
-        message.getChannel.sendMessage(s"${authorDiscriminatedName}, you have been successfully added to the queue and you are first in line!")
+    if(!message.getMessageAuthor.asUser.get.getRoles(message.getServer.get).contains(message.getServer.get.getRolesByName("TA").get(0))) {
+      if (!OHQueue.contains(author)) {
+        OHQueue = OHQueue.enqueue(author)
+        // OHWaitTime :+= (author, (System.nanoTime(), null))
+        if (OHQueue.length == 1) {
+          message.getChannel.sendMessage(s"${authorDiscriminatedName}, you have been successfully added to the queue and you are first in line!")
+        }
+        else {
+          message.getChannel.sendMessage(s"${authorDiscriminatedName}, you have been successfully added to the queue and you are in position: ${OHQueue.length}")
+        }
       }
       else {
-        message.getChannel.sendMessage(s"${authorDiscriminatedName}, you have been successfully added to the queue and you are in position: ${OHQueue.length}")
+        OHQueue = OHQueue.filter(_ != author)
+        OHQueue = OHQueue.enqueue(author)
+        message.getChannel.sendMessage(s"${authorDiscriminatedName}, you were already in the queue! You have been moved to the back.")
       }
     }
     else {
-      OHQueue = OHQueue.filter(_ != author)
-      OHQueue = OHQueue.enqueue(author)
-      message.getChannel.sendMessage(s"${authorDiscriminatedName}, you were already in the queue! You have been moved to the back.")
+      message.getChannel.sendMessage("Meow?")
     }
   }
 

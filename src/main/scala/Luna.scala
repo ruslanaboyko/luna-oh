@@ -2,26 +2,17 @@ import better.files._
 import org.javacord.api.{DiscordApi, DiscordApiBuilder}
 
 object Luna {
-  val tokenFile: String = "token.txt"
-  //  val serversFile: String = "servers.json"
-  val prefix: Char = '!'
+  val TOKEN_FILE: String = "token.txt"
+  val PREFIX: Char = '!'
+  val OH_QUEUE_CHANNEL: String = "office-hours-queue"
+  val BOT_CHANNEL: String = "office-hours-queue"
 
   def main(args: Array[String]): Unit = {
-    val api: DiscordApi = new DiscordApiBuilder().setToken(readToken(File(tokenFile))).login.join
-    //    val serverList: Map[String, String] = {
-    //      if (File(serversFile).notExists) {
-    //        File(serversFile).createFileIfNotExists()
-    //        File(serversFile).append("{}")
-    //        Map()
-    //      }
-    //      else {
-    //        Json.parse(File(serversFile).contentAsString).as[Map[String, String]]
-    //      }
-    //    }
+    val api: DiscordApi = new DiscordApiBuilder().setToken(readToken(File(TOKEN_FILE))).login.join
 
     OfficeHoursBot.start(api)
-//    owoifier.start(api)
-    jessefier.start(api)
+    //owoifier.start(api)
+    //jessefier.start(api)
     kittycat.start(api)
   }
 

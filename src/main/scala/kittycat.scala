@@ -4,8 +4,7 @@ import org.javacord.api.event.message.MessageCreateEvent
 import scala.util.Random
 
 object kittycat {
-
-  val COMMAND_NAME: String = Luna.prefix + "superpet"
+  val COMMAND_NAME: String = Luna.PREFIX + "superpet"
   val MAX_PETS: Int = 100 // The maximum number a user can specify for superpet
 
   // Get the purr message once there is a valid number to use
@@ -79,9 +78,15 @@ object kittycat {
 
   def start(api: DiscordApi): Unit = {
     api.addMessageCreateListener((message: MessageCreateEvent) => {
-      if (message.getMessageAuthor.asUser.get != api.getYourself) {
-        if (message.getMessageContent.startsWith(COMMAND_NAME)) {
+      if (message.getMessageAuthor.asUser.get != api.getYourself && message.getServerTextChannel.get.getName == Luna.BOT_CHANNEL) {
+        if (message.getMessageContent.startsWith(Luna.PREFIX + "superpet")) {
           message.getChannel.sendMessage(superPet(message))
+        }
+        else if (message.getMessageContent.startsWith(Luna.PREFIX + "pet")) {
+          message.getChannel.sendMessage("\\*purr*")
+        }
+        else if (message.getMessageContent.startsWith(Luna.PREFIX + "observe")) {
+          message.getChannel.sendMessage("\\*sniff*")
         }
       }
     })
