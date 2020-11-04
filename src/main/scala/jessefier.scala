@@ -20,13 +20,13 @@ object jessefier {
 
   def start(api: DiscordApi): Unit = {
     api.addMessageCreateListener((message: MessageCreateEvent) => {
-      if (message.getMessageContent.startsWith(Luna.PREFIX + "jessefy")) {
+      if (message.getMessageContent.startsWith(Luna.prefix + "jessefy")) {
         if (message.getMessageAuthor.asUser.get != api.getYourself) {
           message.getChannel.sendMessage(Sanitizer.removeMentions(message.getMessageContent.replace("Hughes", "Jesse")).replace("!jessefy", ""))
         }
       }
 
-      else if (message.getMessageContent.startsWith(Luna.PREFIX + "superjessefy")) {
+      else if (message.getMessageContent.startsWith(Luna.prefix + "superjessefy")) {
         if (message.getMessageAuthor.asUser.get != api.getYourself) {
           var m: String = message.getMessageContent
           message.getChannel.sendMessage(Sanitizer.removeMentions(replaceRandomWordsWithAnotherWord(23, message.getMessageContent, "Jesse")).replace("!superjessefy", ""))
@@ -36,4 +36,3 @@ object jessefier {
     })
   }
 }
-
